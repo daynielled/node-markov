@@ -17,17 +17,17 @@ class MarkovMachine {
    *  {"the": ["cat", "hat"], "cat": ["in"], "in": ["the"], "hat": [null]} */
 
   makeChains() {
-    this.chains = {};
+    let chains = new Map();
 
     for (let i=0; i < this.words.length; i += 1) {
       let word = this.words[i];
       let nextWord = this.words[i+1] || null;
 
-      if (this.chains[word]) this.chains[word].push(nextWord);
-      else this.chains[word] = [nextWord];
+      if (chains.has(word)) chains.get(word).push(nextWord);
+      else chains.set(word, [nextWord]);
       
     }
-    console.log('Generated chains:', this.chains);
+    this.chains = chains;
   }
 
   static choice(ar){
@@ -36,14 +36,14 @@ class MarkovMachine {
   /** return random text from chains */
 
   makeText(numWords = 100) {
-    let keys = Object.keys(this.chains);
+    let keys = Array.from(this.chains.keys());
     let key = MarkovMachine.choice(keys);
     let out = [];
 
     // produce markov chain until reaching termination word
     while (out.length < numWords && key !== null) {
       out.push(key);
-      key = MarkovMachine.choice(this.chains[key]);
+      key = MarkovMachine.choice(this.chains.get(key));
     }
 
     return out.join(" ");
@@ -51,6 +51,4 @@ class MarkovMachine {
 }
 
 
-module.exports = {
-  MarkovMachine,
-};
+module.exports = MarkovMachine;

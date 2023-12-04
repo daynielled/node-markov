@@ -18,7 +18,7 @@ async function generateText(source) {
 
         const markovMachine = new MarkovMachine(text);
         const generatedText = markovMachine.makeText();
-        console.log(generateText);
+        console.log(generatedText);
     }catch(error) {
         console.error('Error', error.message);
     }
