@@ -18,38 +18,35 @@ class MarkovMachine {
 
   makeChains() {
     this.chains = {};
-    for (let i=0; i < this.words.length - 1; i++){
-      const word = this.words[i];
-      const nextWord = this.words[i+1] || null;
 
-      if (!this.chains[word]) {
-        this.chains[word] = [];
-      }
-      this.chains[word].push(nextWord);
+    for (let i=0; i < this.words.length; i += 1) {
+      let word = this.words[i];
+      let nextWord = this.words[i+1] || null;
+
+      if (this.chains[word]) this.chains[word].push(nextWord);
+      else this.chains[word] = [nextWord];
+      
     }
     console.log('Generated chains:', this.chains);
   }
 
-
+  static choice(ar){
+    return ar[Math.floor(Math.random() * ar.length)];
+  }
   /** return random text from chains */
 
   makeText(numWords = 100) {
-   const startIdx = Math.floor(Math.random() * (this.words.length - 1));
-    let currentWord = this.words[startIdx];
-    let result = [currentWord];
+    let keys = Object.keys(this.chains);
+    let key = MarkovMachine.choice(keys);
+    let out = [];
 
-    for (let i = 1; i < numWords; i++) {
-      const nextWords = this.chains[currentWord];
-      if (!nextWords || nextWords.length === 0) {
-        break;
-      }
-      const nextIdx = Math.floor(Math.random() * nextWords.length);
-      const nextWord = nextWords[nextIdx];
-      result.push(nextWord);
-      currentWord = nextWord;
+    // produce markov chain until reaching termination word
+    while (out.length < numWords && key !== null) {
+      out.push(key);
+      key = MarkovMachine.choice(this.chains[key]);
     }
 
-    return result.join(' ');
+    return out.join(" ");
   }
 }
 
